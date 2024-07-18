@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>A-Frame Selectable Object with Right Hand Controller</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+</head>
+<body>
+  <a-scene>
+    <a-box id="box1" position="0 1 -1" scale="0.5 0.5 0.5" color="red"></a-box>
+    <a-text id="txt" value="distance" position="0 0 -1" color="red"></a-text>
+        
+    <a-entity id="ctlR" laser-controls="hand: right" raycaster="showLine: false;"></a-entity>
+  </a-scene>
+  
+  <script>
+    var box = $('#box1')[0].object3D;//box1の座標
+    var controller = $('#ctlR')[0].object3D;//右コントローラーの座標
+  
+    setInterval(function(){
+    	let txt = document.getElementById("txt");
+    	//txt.setAttribute("value", controller.position.z );//右コントローラーのZ座標を表示
+    	
+    	let distance = controller.position.distanceTo(box.position);
+    	txt.setAttribute("value", distance);//右コントローラーとbox1の距離を表示
+    	
+    	if (distance < 0.4){//右コントローラーとbox1が接近したら
+    		$('#box1').attr('color', 'yellow');
+    	}else{
+    		$('#box1').attr('color', 'red');
+    	}
+    }, 100);
+  </script>
+
+</body>
+</html>
