@@ -8,12 +8,13 @@
 </head>
 <body>
   <a-scene cursor="rayOrigin: mouse">
-    <a-box id="box1" position="0 1 -3" src="cat.jpg"></a-box>
+    <a-box class="animal" position="1 1 -3" src="cat.jpg"></a-box>
+    <a-box class="animal" position="-1 1 -3" src="cat.jpg"></a-box>
   </a-scene>
 
   <script>
-      $('#box1').on('click', function() {
-      	if ($('#box1').attr('src') == 'cat.jpg') {
+      $('.animal').on('click', function() {//class="animal"のオブジェクトが対象
+      	if ($(this).attr('src') == 'cat.jpg') {
           	$(this).attr('src', 'dog.jpg');
         }else{
         	$(this).attr('src', 'cat.jpg');
