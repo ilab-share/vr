@@ -14,6 +14,21 @@
   </a-scene>
 
   <script>
+    ////トリガーを使う場合は以下のプログラムを利用する
+    $('#ctlR').on('triggerdown', function(e) {
+    	let target=e.target.components.raycaster.intersectedEls[0];//targetは衝突相手
+    	
+    	if(target!=undefined){//raycasterがどこにも当たっていないとtarget==undefined
+	      	if (target.getAttribute('color') == 'red') {
+	          	target.setAttribute('color', 'yellow');
+	        }else{
+	        	target.setAttribute('color', 'red');
+	        }
+	    }
+    });
+    
+    /*
+    ////トリガーを使わない場合は以下のプログラムを利用する
     $('#ctlR').on('raycaster-intersection', function(e) {
       e.detail.els[0].setAttribute("color","yellow");//e.detail.els[0] は衝突相手
     });
@@ -21,17 +36,9 @@
     $('#ctlR').on('raycaster-intersection-cleared', function(e) {
       e.detail.clearedEls[0].setAttribute("color","red");//e.detail.clearedEls[0] は衝突解除相手
     });
-    
-    
-    $('#ctlR').on('abuttondown triggerdown', function(e) {//AボタンDown 他にも、bbuttondown、triggerdown、gripdown、xbuttondown、ybuttondown、thumbstickmoved
-      $('#box1').attr('color', 'blue');
-    });
-    
-    $('#ctlR').on('abuttonup triggerup', function(e) {//AボタンUp
-      $('#box1').attr('color', 'red');
-    });
-    
-</script>
+    */
+
+  </script>
     
 </body>
 </html>
