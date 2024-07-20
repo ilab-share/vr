@@ -8,17 +8,17 @@
 </head>
 <body>
   <a-scene>
-    <a-box id="box1" position="0 1 -3" color="red"></a-box>
+    <a-box id="box1" position="0 1 -3" color="red" rotation="0 0 0"></a-box>
     
     <a-entity id="ctlR" laser-controls="hand: right" raycaster="lineColor: red;"></a-entity>
   </a-scene>
 
   <script>
-    ////トリガーを使う場合は以下のプログラムを利用する
+    ////トリガーを押した場合の処理
     $('#ctlR').on('triggerdown', function(e) {
     	let target=e.target.components.raycaster.intersectedEls[0];//targetは衝突相手
     	
-    	if(target!=undefined){//raycasterがどこにも当たっていないとtarget==undefined
+    	if(target!=undefined){//raycasterがどの物体にも当たっていないと target==undefined
 	      	if (target.getAttribute('color') == 'red') {
 	          	target.setAttribute('color', 'yellow');
 	        }else{
@@ -27,16 +27,15 @@
 	    }
     });
     
-    /*
-    ////トリガーを使わない場合は以下のプログラムを利用する
+    
+    ////raycasterが物体に触れた場合の処理(必要に応じて)
     $('#ctlR').on('raycaster-intersection', function(e) {
-      e.detail.els[0].setAttribute("color","yellow");//e.detail.els[0] は衝突相手
+      e.detail.els[0].setAttribute("rotation","0 45 45");//e.detail.els[0] は衝突相手
     });
-
     $('#ctlR').on('raycaster-intersection-cleared', function(e) {
-      e.detail.clearedEls[0].setAttribute("color","red");//e.detail.clearedEls[0] は衝突解除相手
+      e.detail.clearedEls[0].setAttribute("rotation","0 0 0");//e.detail.clearedEls[0] は衝突解除相手
     });
-    */
+    
 
   </script>
     
