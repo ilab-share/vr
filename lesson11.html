@@ -11,6 +11,7 @@
     <a-scene physics="driver: ammo" cursor="rayOrigin: mouse">
       <a-plane id="plane" position="0 0 -5" rotation="-90 0 0" width="3" height="3" color="blue" 
                ammo-body="type: static; emitCollisionEvents: true" ammo-shape="type: box"></a-plane>
+      <a-entity id="ctlR" laser-controls="hand: right" raycaster="lineColor: red;"></a-entity>
     </a-scene>
 
 	<script>
