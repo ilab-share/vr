@@ -13,14 +13,12 @@
 	<script>
 	
 	  function ShowAlert(message){
-		  let text = document.createElement("a-entity");//動的生成
-		  text.setAttribute("position", "0 2 -4");
-		  text.setAttribute("depth", "0.5");
-		  text.setAttribute("width", "2");
-		  text.setAttribute("height", "1");
-		  text.setAttribute("color", "white");
-		  text.setAttribute("scale","5 5 1");
-		  text.setAttribute("text", "color: red;  align: center; value:" + message + ";");
+		  let text = document.createElement("a-text");//動的生成
+		  text.setAttribute("position", "0 1 -4");
+		  text.setAttribute("color", "red");
+		  text.setAttribute("scale","2 2 1");
+		  text.setAttribute("value",message);
+
 		  
 		  let scene = document.querySelector("a-scene");
 		  scene.appendChild(text);//シーンに追加（表示）
