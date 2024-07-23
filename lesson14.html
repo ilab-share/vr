@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+
+  </head>
+  <body>
+    <a-scene cursor="rayOrigin: mouse">
+      <a-entity id="ctlR" laser-controls="hand: right" raycaster="lineColor: red;"></a-entity>
+    </a-scene>
+
+	<script>
+	
+	  function ShowAlert(message){
+		  let text = document.createElement("a-entity");//動的生成
+		  text.setAttribute("position", "0 2 -4");
+		  text.setAttribute("depth", "0.5");
+		  text.setAttribute("width", "2");
+		  text.setAttribute("height", "1");
+		  text.setAttribute("color", "white");
+		  text.setAttribute("scale","5 5 1");
+		  text.setAttribute("text", "color: red;  align: center; value:" + message + ";");
+		  
+		  let scene = document.querySelector("a-scene");
+		  scene.appendChild(text);//シーンに追加（表示）
+		  
+          text.addEventListener("click", function (e) {//クリックされたら消す
+            this.remove();
+          });
+       }
+       
+       ShowAlert("Click Me");
+         		  
+	</script>
+
+
+  </body>
+</html>

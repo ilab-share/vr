@@ -9,6 +9,7 @@
   <body>
     <a-scene cursor="rayOrigin: mouse">
 		<a-entity id="ctlR" laser-controls="hand: right" raycaster="showLine: false;"></a-entity>
+		<a-entity id="ctlL" laser-controls="hand: left" raycaster="showLine: true; lineColor: green;"></a-entity>
     </a-scene>
 
 	<script>
@@ -24,16 +25,20 @@
 				draw.setAttribute("position", posR);
 				draw.setAttribute("color", "red");
 				
+		        draw.addEventListener("click", function (e) {//クリックされたら消える
+            		this.remove();
+          		});
+          
 				let scene = document.querySelector("a-scene");
 				scene.appendChild(draw);//シーンにsphereを追加（表示）
 			}
 		}, 33);
 		
-	    $('#ctlR').on('abuttondown triggerdown', function() {//AボタンDown トリガーDown
+	    $('#ctlR').on('triggerdown', function() {//AボタンDown トリガーDown
       		isPressed = true;
     	});
     	
-    	$('#ctlR').on('abuttonup triggerup', function() {//AボタンUP トリガーUP
+    	$('#ctlR').on('triggerup', function() {//AボタンUP トリガーUP
       		isPressed = false;
     	});
     
