@@ -8,17 +8,23 @@
 
   </head>
   <body>
-    <a-scene physics="driver: ammo">
-      <a-plane id="plane" position="0 0 -5" rotation="-90 0 0" width="3" height="3" color="blue" 
+    <a-scene physics="driver: ammo" cursor="rayOrigin: mouse">
+      <a-plane id="plane" position="0 0 -2" rotation="-90 0 0" width="3" height="3" color="blue" 
                ammo-body="type: static; emitCollisionEvents: true" ammo-shape="type: box"></a-plane>
 
-      <a-box id="box" position="0 5 -5" width="1" height="1" depth="1" color="green" 
+      <a-box id="box" position="0 5 -2" width="1" height="1" depth="1" color="green" 
              ammo-body="type: dynamic; emitCollisionEvents: true" ammo-shape="type: box"></a-box>
 
-      <a-sphere id="sphere" position="0.5 8 -5" radius="0.5" color="red" 
+      <a-sphere id="sphere" position="0.5 8 -2" radius="0.5" color="red" 
                 ammo-body="type: dynamic; emitCollisionEvents: true" ammo-shape="type: sphere"></a-sphere>
 
-	  <a-text id="txt" value="start!" position="0 -1 -5" color="red"></a-text>
+	  <a-text id="txt" value="start!" position="0 -1 -2" color="red"></a-text>
+	  
+	  <a-entity id="ctlR" laser-controls="hand: right" raycaster="showLine: false;" >
+	  		<a-sphere position="0 0 0" radius="0.1" color="pink" 
+	  		ammo-body="type: static; emitCollisionEvents: true" ammo-shape="type: sphere"></a-sphere>
+	  </a-entity>
+	  
     </a-scene>
 
 	<script>
