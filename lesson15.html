@@ -11,9 +11,12 @@
     </a-scene>
 
 	<script>
-	
+	   const textElement = document.getElementById("clickMeText");
+	   const ctlRElement = document.getElementById("ctlR");
+		
 	  function ShowAlert(message){
 		  let text = document.createElement("a-text");//動的生成
+		  text.setAttribute("id", "clickMeText");
 		  text.setAttribute("position", "0 1 -4");
 		  text.setAttribute("color", "red");
 		  text.setAttribute("scale","2 2 1");
@@ -26,8 +29,16 @@
           text.addEventListener("click", function (e) {//クリックされたら消す
             this.remove();
           });
+
+	  ctlRElement.addEventListener("bbuttonpress", function (e) {//クリックされたら消す
+            textElement.remove();
+          });
+
+		  
        }
-       
+
+		 
+		
        ShowAlert("Click Me");
          		  
 	</script>
