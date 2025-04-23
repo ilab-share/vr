@@ -7,19 +7,32 @@
   </head>
   <body>
     <a-scene cursor="rayOrigin: mouse">
-      <a-entity id="ctlR" laser-controls="hand: right" oculus-touch-controls="hand: right" raycaster="lineColor: red;"></a-entity>
+      <a-entity id="ctlR" laser-controls="hand: right" vr-controller raycaster="lineColor: red;"></a-entity>
     </a-scene>
 
 	<script>
-	   const ctlRElement = document.getElementById("ctlR");
+	   /*const ctlRElement = document.getElementById("ctlR");
 
 	   ctlRElement.addEventListener("bbuttondown", function (e) {//クリックされたら消す
 		    const textElement = document.getElementById("clickMeText");
 		    if (textElement) {// textElement がまだ存在するか確認
 			    textElement.remove();
 		    }
-	   });
+	   });*/
 
+	AFRAME.registerComponent("vr-controller", {
+		dependencies: ["raycaster"],// Important
+		init: function(){
+	   	   const ctlRElement = document.getElementById("ctlR");
+		   ctlRElement.addEventListener("bbuttondown", function (e) {//クリックされたら消す
+			    const textElement = document.getElementById("clickMeText");
+			    if (textElement) {// textElement がまだ存在するか確認
+				    textElement.remove();
+			    }
+		   });
+		}
+	});
+		
 		
 	   function ShowAlert(message){
 		  let text = document.createElement("a-text");//動的生成
