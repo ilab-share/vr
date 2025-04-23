@@ -27,8 +27,12 @@
             const rightHand = document.querySelector('#rightHand');
             const textEl = document.querySelector('#messageText');
 
-            rightHand.addEventListener('buttondown', function (evt) {
-		textEl.setAttribute('text', 'value', '右コントローラーのBボタンが押されました！');
+            rightHand.addEventListener('abuttondown', function (evt) {
+		textEl.setAttribute('text', 'value', 'A button of right hand');
+            });
+
+	    rightHand.addEventListener('bbuttondown', function (evt) {
+		textEl.setAttribute('text', 'value', 'B button of right hand');
             });
 
             console.log('Button listener attached directly.'); // デバッグ用
