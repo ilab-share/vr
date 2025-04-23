@@ -11,27 +11,19 @@
     </a-scene>
 
 	<script>
-	   /*const ctlRElement = document.getElementById("ctlR");
 
-	   ctlRElement.addEventListener("bbuttondown", function (e) {//クリックされたら消す
-		    const textElement = document.getElementById("clickMeText");
-		    if (textElement) {// textElement がまだ存在するか確認
-			    textElement.remove();
-		    }
-	   });*/
-
-	AFRAME.registerComponent("vr-controller", {
-		dependencies: ["raycaster"],// Important
-		init: function(){
-	   	   const ctlRElement = document.getElementById("ctlR");
-		   ctlRElement.addEventListener("bbuttondown", function (e) {//クリックされたら消す
-			    const textElement = document.getElementById("clickMeText");
-			    if (textElement) {// textElement がまだ存在するか確認
-				    textElement.remove();
-			    }
-		   });
-		}
-	});
+		AFRAME.registerComponent("vr-controller", {
+			dependencies: ["raycaster"],// Important
+			init: function(){
+		   	   const ctlRElement = document.getElementById("ctlR");
+			   ctlRElement.addEventListener("bbuttondown", function (e) {//クリックされたら消す
+				    const textElement = document.getElementById("clickMeText");
+				    if (textElement) {// textElement がまだ存在するか確認
+					    textElement.remove();
+				    }
+			   });
+			}
+		});
 		
 		
 	   function ShowAlert(message){
