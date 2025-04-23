@@ -8,7 +8,7 @@
 </head>
 <body>
     <a-scene>
-        <a-entity id="rightHand" hand-controls="hand: right"></a-entity>
+        <a-entity id="ctlR" laser-controls="hand: right"></a-entity>
 
 	<a-text
             id="messageText"
@@ -24,18 +24,14 @@
     <script>
         const sceneEl = document.querySelector('a-scene');
         sceneEl.addEventListener('loaded', function () {
-            const rightHand = document.querySelector('#rightHand');
+            const rightHand = document.querySelector('#ctlR');
             const textEl = document.querySelector('#messageText');
 
-            rightHand.addEventListener('abuttondown', function (evt) {
-		textEl.setAttribute('text', 'value', 'A button of right hand');
+            rightHand.addEventListener('buttondown', function (evt) {
+		textEl.setAttribute('text', 'value', 'button of right hand');
             });
 
-	    rightHand.addEventListener('bbuttondown', function (evt) {
-		textEl.setAttribute('text', 'value', 'B button of right hand');
-            });
 
-            console.log('Button listener attached directly.'); // デバッグ用
         });
     </script>
 </body>
