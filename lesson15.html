@@ -1,55 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>A-Frame Quest 3 Button Example (Short)</title>
+    <meta name="description" content="Detect Quest 3 Right Controller B button press in A-Frame (Short Version).">
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+</head>
+<body>
+    <a-scene>
+        <a-entity id="rightHand" hand-controls="hand: right"></a-entity>
 
-  </head>
-  <body>
-    <a-scene cursor="rayOrigin: mouse">
-      <a-entity id="ctlR" laser-controls="hand: right" vr-controller raycaster="lineColor: red;"></a-entity>
+	<a-text
+            id="messageText"
+            value=""
+            position="0 1.5 -1"
+            align="center"
+            color="white"
+            width="2"
+        ></a-text>
+
     </a-scene>
 
-	<script>
+    <script>
+        const sceneEl = document.querySelector('a-scene');
+        sceneEl.addEventListener('loaded', function () {
+            const rightHand = document.querySelector('#rightHand');
+            const textEl = document.querySelector('#messageText');
 
-		AFRAME.registerComponent("vr-controller", {
-			dependencies: ["raycaster"],// Important
-			init: function(){
-		   	   const ctlRElement = document.getElementById("ctlR");
-			   ctlRElement.addEventListener("bbuttondown", function (e) {//クリックされたら消す
-				    const textElement = document.getElementById("clickMeText");
-				    if (textElement) {// textElement がまだ存在するか確認
-					    textElement.remove();
-				    }
-			   });
-			}
-		});
-		
-		
-	   function ShowAlert(message){
-		  let text = document.createElement("a-text");//動的生成
-		  text.setAttribute("id", "clickMeText");
-		  text.setAttribute("position", "0 1 -4");
-		  text.setAttribute("color", "red");
-		  text.setAttribute("scale","2 2 1");
-		  text.setAttribute("value",message);
+            rightHand.addEventListener('buttondown', function (evt) {
+		textEl.setAttribute('text', 'value', '右コントローラーのBボタンが押されました！');
+            });
 
-		  
-		  let scene = document.querySelector("a-scene");
-		  scene.appendChild(text);//シーンに追加（表示）
-		  
-	          text.addEventListener("click", function (e) {//クリックされたら消す
-	            this.remove();
-	          });
-	
-       }
-
-		 
-		
-       ShowAlert("Click Me");
-         		  
-	</script>
-
-
-  </body>
+            console.log('Button listener attached directly.'); // デバッグ用
+        });
+    </script>
+</body>
 </html>
