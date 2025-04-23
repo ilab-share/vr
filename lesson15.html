@@ -31,7 +31,9 @@
 
 	  ctlRElement.addEventListener("bbuttondown", function (e) {//クリックされたら消す
 	    const textElement = document.getElementById("clickMeText");
-            textElement.remove();
+            if (textElement) {// textElement がまだ存在するか確認
+		    textElement.remove();
+	    }
           });
 
 		  
