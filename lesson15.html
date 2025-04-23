@@ -27,10 +27,13 @@
             const rightHand = document.querySelector('#ctlR');
             const textEl = document.querySelector('#messageText');
 
-            rightHand.addEventListener('buttondown', function (evt) {
-		textEl.setAttribute('text', 'value', 'button of right hand');
+            rightHand.addEventListener('abuttondown', function (evt) {
+		textEl.setAttribute('text', 'value', 'A of right hand');
             });
 
+	    rightHand.addEventListener('bbuttondown', function (evt) {
+		textEl.setAttribute('text', 'value', 'B of right hand');
+            });
 
         });
     </script>
