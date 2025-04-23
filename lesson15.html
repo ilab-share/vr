@@ -12,8 +12,16 @@
 
 	<script>
 	   const ctlRElement = document.getElementById("ctlR");
+
+	   ctlRElement.addEventListener("bbuttondown", function (e) {//クリックされたら消す
+		    const textElement = document.getElementById("clickMeText");
+		    if (textElement) {// textElement がまだ存在するか確認
+			    textElement.remove();
+		    }
+	   });
+
 		
-	  function ShowAlert(message){
+	   function ShowAlert(message){
 		  let text = document.createElement("a-text");//動的生成
 		  text.setAttribute("id", "clickMeText");
 		  text.setAttribute("position", "0 1 -4");
@@ -25,18 +33,10 @@
 		  let scene = document.querySelector("a-scene");
 		  scene.appendChild(text);//シーンに追加（表示）
 		  
-          text.addEventListener("click", function (e) {//クリックされたら消す
-            this.remove();
-          });
-
-	  ctlRElement.addEventListener("bbuttondown", function (e) {//クリックされたら消す
-	    const textElement = document.getElementById("clickMeText");
-            if (textElement) {// textElement がまだ存在するか確認
-		    textElement.remove();
-	    }
-          });
-
-		  
+	          text.addEventListener("click", function (e) {//クリックされたら消す
+	            this.remove();
+	          });
+	
        }
 
 		 
