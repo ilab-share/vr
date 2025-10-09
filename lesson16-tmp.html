@@ -23,7 +23,7 @@
         AFRAME.registerComponent('confetti-mover', {
             schema: {
                 // 3. 最大生存時間を長く (10秒から20秒へ)
-                maxAge: { type: 'number', default: 20 }, 
+                maxAge: { type: 'number', default: 30 }, // Increased maxAge to 30 seconds
             },
 
             init: function () {
@@ -37,8 +37,8 @@
                 this.rotationSpeedX = (Math.random() - 0.5) * 30; 
                 this.rotationSpeedY = (Math.random() - 0.5) * 30;
                 
-                // 2. 重力を大幅に弱くする (0.1 -> 0.02)
-                this.gravity = new V3(0, -9.8 * 0.02, 0); 
+                // 2. 重力を大幅に弱くする (0.1 -> 0.02 -> 0.005)
+                this.gravity = new V3(0, -9.8 * 0.005, 0); // Further reduced gravity
                 
                 // 初期のランダムな水平方向の速度を与える
                 this.initialVelocitySpread = new V3(0.5, 0.5, 0.5);
@@ -59,8 +59,8 @@
 
                 // 1. 加速度の計算 (重力 + 軽い風のランダム性)
                 this.acceleration.copy(this.gravity);
-                this.acceleration.x += (Math.random() - 0.5) * 0.05; // 風を弱める
-                this.acceleration.z += (Math.random() - 0.5) * 0.05;
+                this.acceleration.x += (Math.random() - 0.5) * 0.02; // 風を弱める
+                this.acceleration.z += (Math.random() - 0.5) * 0.02; // 風を弱める
                 
                 // 2. 速度の更新 (V = V0 + A * t)
                 this.velocity.addScaledVector(this.acceleration, deltaSeconds);
@@ -165,7 +165,7 @@
                 id="confetti-mixin" 
                 geometry="primitive: plane; width: 0.1; height: 0.15" 
                 material="shader: standard; side: double; roughness: 0.5"
-                confetti-mover="maxAge: 20"
+                confetti-mover="maxAge: 30"
             ></a-mixin>
         </a-assets>
 
