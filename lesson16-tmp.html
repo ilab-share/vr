@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- 1. UTF-8 メタタグを追加 -->
     <meta charset="UTF-8">
     <title>A-Frame Confetti Shower (Slow Motion)</title>
-    <!-- A-Frame本体のみを使用 -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
     <style>
@@ -16,14 +14,9 @@
     <script>
         const V3 = THREE.Vector3;
 
-        /**
-         * Confetti Mover コンポーネント
-         * - 各紙吹雪の動き（重力と風）をシミュレーションします。
-         */
         AFRAME.registerComponent('confetti-mover', {
             schema: {
-                // 3. 最大生存時間を長く (10秒から20秒へ)
-                maxAge: { type: 'number', default: 30 }, // Increased maxAge to 30 seconds
+                maxAge: { type: 'number', default: 30 }, 
             },
 
             init: function () {
@@ -33,14 +26,11 @@
                 this.acceleration = new V3(0, 0, 0);
                 this.age = 0;
                 
-                // 回転速度（ひらひら舞う効果）を少し遅く調整
                 this.rotationSpeedX = (Math.random() - 0.5) * 30; 
                 this.rotationSpeedY = (Math.random() - 0.5) * 30;
                 
-                // 2. 重力を大幅に弱くする (0.1 -> 0.02 -> 0.005)
-                this.gravity = new V3(0, -9.8 * 0.005, 0); // Further reduced gravity
+                this.gravity = new V3(0, -9.8 * 0.005, 0); 
                 
-                // 初期のランダムな水平方向の速度を与える
                 this.initialVelocitySpread = new V3(0.5, 0.5, 0.5);
             },
 
@@ -51,35 +41,28 @@
                 const deltaSeconds = dt / 1000;
                 this.age += deltaSeconds;
 
-                // 寿命チェック
                 if (this.age > data.maxAge) {
                     this.resetConfetti();
                     return;
                 }
 
-                // 1. 加速度の計算 (重力 + 軽い風のランダム性)
                 this.acceleration.copy(this.gravity);
-                this.acceleration.x += (Math.random() - 0.5) * 0.02; // 風を弱める
-                this.acceleration.z += (Math.random() - 0.5) * 0.02; // 風を弱める
+                this.acceleration.x += (Math.random() - 0.5) * 0.02; 
+                this.acceleration.z += (Math.random() - 0.5) * 0.02;
                 
-                // 2. 速度の更新 (V = V0 + A * t)
                 this.velocity.addScaledVector(this.acceleration, deltaSeconds);
                 
-                // 3. 位置の更新 (P = P0 + V * t)
                 this.el.object3D.position.addScaledVector(this.velocity, deltaSeconds);
                 
-                // 4. 回転の更新 (ひらひら効果)
                 const currentRotation = this.el.object3D.rotation;
                 currentRotation.x += THREE.MathUtils.degToRad(this.rotationSpeedX * deltaSeconds);
                 currentRotation.y += THREE.MathUtils.degToRad(this.rotationSpeedY * deltaSeconds);
 
-                // 地面より下に落ちたらリセット
                 if (this.el.object3D.position.y < 0) {
                     this.resetConfetti();
                 }
             },
             
-            // 紙吹雪を上空にリセットする関数
             resetConfetti: function() {
                 const el = this.el;
                 const spawnerEl = el.parentNode;
@@ -87,18 +70,15 @@
                 const spawnerPos = spawnerEl.object3D.position;
                 const radius = spawnerEl.components['confetti-spawner'].data.spawnRadius;
 
-                // ランダムな水平位置
                 const angle = Math.random() * Math.PI * 2;
                 const r = Math.sqrt(Math.random()) * radius;
 
                 el.object3D.position.set(
                     spawnerPos.x + r * Math.cos(angle),
-                    // Y座標にランダムなばらつきを持たせることで、同時に落下開始するのを防ぐ
                     spawnerPos.y + (Math.random() * 2 - 1), 
                     spawnerPos.z + r * Math.sin(angle)
                 );
                 
-                // 初期速度にわずかなばらつきを持たせる
                 this.velocity.set(
                     (Math.random() - 0.5) * this.initialVelocitySpread.x,
                     (Math.random() - 0.5) * this.initialVelocitySpread.y,
@@ -109,13 +89,13 @@
         });
 
 
-        /**
-         * Confetti Spawner コンポーネント
-         */
         AFRAME.registerComponent('confetti-spawner', {
             schema: {
                 count: { type: 'number', default: 1000 },
                 spawnRadius: { type: 'number', default: 4 },
+                // 新しいスキーマ：紙吹雪の最小・最大サイズ
+                minSize: { type: 'number', default: 0.05 },
+                maxSize: { type: 'number', default: 0.2 },
             },
 
             init: function () {
@@ -134,12 +114,16 @@
                     
                     const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
                     confetti.setAttribute('material', 'color', randomColor);
+
+                    // 紙吹雪のサイズをランダムに設定
+                    const size = data.minSize + (Math.random() * (data.maxSize - data.minSize));
+                    const aspectRatio = 0.5 + Math.random(); // 0.5から1.5の間でアスペクト比を変化
+                    confetti.setAttribute('geometry', `primitive: plane; width: ${size}; height: ${size * aspectRatio}`);
                     
                     container.appendChild(confetti);
                     
                     confetti.setAttribute('confetti-mover', {});
                     
-                    // 初期化が完了してからリセット関数を呼び出し
                     setTimeout(() => {
                         const mover = confetti.components['confetti-mover'];
                         if (mover) {
@@ -163,7 +147,6 @@
         <a-assets>
             <a-mixin 
                 id="confetti-mixin" 
-                geometry="primitive: plane; width: 0.1; height: 0.15" 
                 material="shader: standard; side: double; roughness: 0.5"
                 confetti-mover="maxAge: 30"
             ></a-mixin>
@@ -177,10 +160,10 @@
         <!-- 地面 -->
         <a-box position="0 -0.05 0" width="10" height="0.1" depth="10" color="#333" roughness="0.8"></a-box>
 
-        <!-- 紙吹雪の発生源（スポナー） -->
+        <!-- 紙吹雪の発生源（スポナー） - positionを0 4 0に変更 -->
         <a-entity 
-            position="0 8 0" 
-            confetti-spawner="count: 1000; spawnRadius: 4"
+            position="0 4 0" 
+            confetti-spawner="count: 1000; spawnRadius: 4; minSize: 0.05; maxSize: 0.2"
         >
         </a-entity>
 
