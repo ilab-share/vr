@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>A-Frame VR Draggable Object</title>
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+</head>
+
+<body>
+  <a-scene>
+    <!-- カメラリグ（VRモード用） -->
+    <a-entity id="rig" position="0 0 0">
+      <a-camera></a-camera>
+
+      <!-- 左右のコントローラー -->
+      <a-entity id="ctlL" laser-controls="hand: left"
+        raycaster="objects: .draggable; lineColor: blue; lineOpacity: 0.5"></a-entity>
+      <a-entity id="ctlR" laser-controls="hand: right"
+        raycaster="objects: .draggable; lineColor: red; lineOpacity: 0.5"></a-entity>
+    </a-entity>
+
+    <!-- つかめる箱 -->
+    <a-box id="box1" class="draggable" position="0 1.5 -3" color="red" draggable></a-box>
+
+    <!-- 追加の箱（テスト用） -->
+    <a-box class="draggable" position="1 1.5 -3" color="blue" draggable></a-box>
+    <a-box class="draggable" position="-1 1.5 -3" color="green" draggable></a-box>
+
+    <!-- 床 -->
+    <a-plane position="0 0 0" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
+
+    <!-- 空 -->
+    <a-sky color="#ECECEC"></a-sky>
+  </a-scene>
+
+  <script>
+    // ドラッグ移動用のコンポーネントを定義（VR対応版）
+    AFRAME.registerComponent('draggable', {
+      init: function () {
+        this.isDragging = false;
+        this.distance = 0;
+        this.raycaster = null;
+        this.currentController = null;
+
+        // イベントハンドラーをバインド
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseUp = this.onMouseUp.bind(this);
+        this.onTriggerDown = this.onTriggerDown.bind(this);
+        this.onTriggerUp = this.onTriggerUp.bind(this);
+
+        // デスクトップモード用イベント
+        this.el.addEventListener('mousedown', this.onMouseDown);
+        window.addEventListener('mouseup', this.onMouseUp);
+
+        // VRモード用イベント
+        this.el.addEventListener('triggerdown', this.onTriggerDown);
+
+        // コントローラーのtriggerupイベントを監視
+        this.el.sceneEl.addEventListener('loaded', () => {
+          const ctlL = document.getElementById('ctlL');
+          const ctlR = document.getElementById('ctlR');
+
+          if (ctlL) ctlL.addEventListener('triggerup', this.onTriggerUp);
+          if (ctlR) ctlR.addEventListener('triggerup', this.onTriggerUp);
+        });
+      },
+
+      onMouseDown: function (evt) {
+        // 交差情報がある場合のみドラッグ開始
+        if (evt.detail.intersection) {
+          this.isDragging = true;
+          this.distance = evt.detail.intersection.distance;
+          // イベント発生元のカーソル（マウスまたはコントローラー）のRaycasterを取得
+          this.raycaster = evt.detail.cursorEl.components.raycaster.raycaster;
+          this.currentController = evt.detail.cursorEl;
+        }
+      },
+
+      onMouseUp: function () {
+        this.isDragging = false;
+        this.raycaster = null;
+        this.currentController = null;
+      },
+
+      onTriggerDown: function (evt) {
+        // VRモードでトリガーが引かれた時
+        const cursorEl = evt.detail.cursorEl;
+        if (!cursorEl) return;
+
+        const raycasterComponent = cursorEl.components.raycaster;
+        if (!raycasterComponent) return;
+
+        // このオブジェクトが交差しているか確認
+        if (raycasterComponent.intersectedEls.includes(this.el)) {
+          const intersection = raycasterComponent.getIntersection(this.el);
+          if (intersection) {
+            this.isDragging = true;
+            this.distance = intersection.distance;
+            this.raycaster = raycasterComponent.raycaster;
+            this.currentController = cursorEl;
+          }
+        }
+      },
+
+      onTriggerUp: function (evt) {
+        // VRモードでトリガーが離された時
+        // 現在ドラッグ中のコントローラーと一致する場合のみ解放
+        if (this.currentController === evt.target) {
+          this.isDragging = false;
+          this.raycaster = null;
+          this.currentController = null;
+        }
+      },
+
+      tick: function () {
+        if (!this.isDragging || !this.raycaster) return;
+
+        // レイキャスターの原点と方向を取得
+        var direction = this.raycaster.ray.direction.clone();
+        var origin = this.raycaster.ray.origin.clone();
+
+        // クリックした時の距離を維持して新しい位置を計算
+        var newPosition = origin.add(direction.multiplyScalar(this.distance));
+        this.el.object3D.position.copy(newPosition);
+      },
+
+      remove: function () {
+        this.el.removeEventListener('mousedown', this.onMouseDown);
+        this.el.removeEventListener('triggerdown', this.onTriggerDown);
+        window.removeEventListener('mouseup', this.onMouseUp);
+
+        const ctlL = document.getElementById('ctlL');
+        const ctlR = document.getElementById('ctlR');
+
+        if (ctlL) ctlL.removeEventListener('triggerup', this.onTriggerUp);
+        if (ctlR) ctlR.removeEventListener('triggerup', this.onTriggerUp);
+      }
+    });
+  </script>
+</body>
+
+</html>

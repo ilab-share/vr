@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>A-Frame VR Grab Object</title>
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+</head>
+
+<body>
+  <a-scene>
+    <!-- カメラリグ（VRモード用） -->
+    <a-entity id="rig" position="0 0 0">
+      <a-camera></a-camera>
+
+      <!-- 左右のコントローラー -->
+      <a-entity id="ctlL" laser-controls="hand: left"
+        raycaster="objects: .grabbable; lineColor: blue; lineOpacity: 0.5"></a-entity>
+      <a-entity id="ctlR" laser-controls="hand: right"
+        raycaster="objects: .grabbable; lineColor: red; lineOpacity: 0.5"></a-entity>
+    </a-entity>
+
+    <!-- つかめる箱（grabbableクラスを追加） -->
+    <a-box id="targetBox" class="grabbable" position="0 1.5 -3" color="red"></a-box>
+
+    <!-- 追加の箱（テスト用） -->
+    <a-box class="grabbable" position="1 1.5 -3" color="blue"></a-box>
+    <a-box class="grabbable" position="-1 1.5 -3" color="green"></a-box>
+
+    <!-- 床 -->
+    <a-plane position="0 0 0" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
+
+    <!-- 空 -->
+    <a-sky color="#ECECEC"></a-sky>
+  </a-scene>
+
+  <script>
+    // ページ読み込み完了後に実行
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // つかめるオブジェクトを全て取得
+      const grabbableObjects = document.querySelectorAll('.grabbable');
+
+      // 左右のコントローラーを取得
+      const controllers = [
+        document.getElementById('ctlL'),
+        document.getElementById('ctlR')
+      ];
+
+      // 状態管理用の変数（コントローラーごと）
+      const grabState = {
+        left: { isDragging: false, dragDistance: 0, targetObject: null },
+        right: { isDragging: false, dragDistance: 0, targetObject: null }
+      };
+
+      // 各つかめるオブジェクトにイベントリスナーを設定
+      grabbableObjects.forEach(obj => {
+
+        // --- マウスダウン（デスクトップモード用） ---
+        obj.addEventListener('mousedown', (evt) => {
+          if (evt.detail.intersection) {
+            const hand = evt.detail.cursorEl.id === 'ctlL' ? 'left' : 'right';
+            const state = grabState[hand];
+
+            state.isDragging = true;
+            state.dragDistance = evt.detail.intersection.distance;
+            state.targetObject = obj;
+          }
+        });
+
+        // --- トリガーダウン（VRモード用） ---
+        obj.addEventListener('triggerdown', (evt) => {
+          // どのコントローラーがトリガーを引いたか判定
+          const hand = evt.detail.cursorEl?.id === 'ctlL' ? 'left' : 'right';
+          const state = grabState[hand];
+
+          // Raycasterで交差しているか確認
+          const raycaster = evt.detail.cursorEl?.components.raycaster;
+          if (raycaster && raycaster.intersectedEls.includes(obj)) {
+            const intersection = raycaster.getIntersection(obj);
+            if (intersection) {
+              state.isDragging = true;
+              state.dragDistance = intersection.distance;
+              state.targetObject = obj;
+            }
+          }
+        });
+      });
+
+      // --- マウスアップ（デスクトップモード用） ---
+      window.addEventListener('mouseup', () => {
+        grabState.left.isDragging = false;
+        grabState.left.targetObject = null;
+        grabState.right.isDragging = false;
+        grabState.right.targetObject = null;
+      });
+
+      // --- トリガーアップ（VRモード用） ---
+      controllers.forEach((controller, index) => {
+        const hand = index === 0 ? 'left' : 'right';
+
+        controller.addEventListener('triggerup', () => {
+          grabState[hand].isDragging = false;
+          grabState[hand].targetObject = null;
+        });
+      });
+
+      // --- メインループ ---
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // 左右のコントローラーをチェック
+        controllers.forEach((controller, index) => {
+          const hand = index === 0 ? 'left' : 'right';
+          const state = grabState[hand];
+
+          // ドラッグ中でなければスキップ
+          if (!state.isDragging || !state.targetObject) return;
+
+          // Raycasterを取得
+          const raycasterComponent = controller.components.raycaster;
+          if (!raycasterComponent) return;
+
+          const raycaster = raycasterComponent.raycaster;
+
+          // Ray(光線)の原点と向きを取得
+          const direction = raycaster.ray.direction.clone();
+          const origin = raycaster.ray.origin.clone();
+
+          // 計算: 新しい位置 = 原点 + (向き × 距離)
+          const newPosition = origin.add(direction.multiplyScalar(state.dragDistance));
+
+          // オブジェクトの位置を更新
+          state.targetObject.object3D.position.copy(newPosition);
+        });
+      }
+
+      // ループを開始
+      animate();
+    });
+  </script>
+</body>
+
+</html>
